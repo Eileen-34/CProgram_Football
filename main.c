@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 enum BundesligaTeam {
     BayernMunich,
     BayerLeverkusen,
@@ -32,10 +33,19 @@ int isValidDate(int day, int month, int year) {
     int maxDay;
 
     switch (month) {
-        case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+        case 1:
+        case 3:
+        case 5:
+        case 7:
+        case 8:
+        case 10:
+        case 12:
             maxDay = 31;
             break;
-        case 4: case 6: case 9: case 11:
+        case 4:
+        case 6:
+        case 9:
+        case 11:
             maxDay = 30;
             break;
         case 2:
@@ -54,31 +64,41 @@ int isValidDate(int day, int month, int year) {
 //Node structure for the linked list
 struct Node {
     struct footballGame data;
-    struct  Node* next;
+    struct Node *next;
 };
 
 //Linked list Structure
-struct LinkedList {
-    struct Node* head;
-};
+typedef struct LinkedList {
+    struct Node *head;
+} LinkedList;
 
 // Function prototypes
-void initializeList(struct LinkedList* list);
+LinkedList *initializeList();
+
 struct footballGame enterMatch(int matchNumber);
-void enterMatchScores(struct LinkedList* list);
-void addMatchResult(struct LinkedList* list, const struct footballGame* result);
-void calculateTotalPoints(const struct LinkedList* list);
-void printResults(const struct LinkedList* list);
-int checkWinningScore(const struct LinkedList* list, int team);
-void calculateMatchNumbers(const struct LinkedList* list);
-void displayMatchesPlayedOnADate(const struct LinkedList* list);
-void displayTeamStatistics(const struct LinkedList* list);
-void freeList(struct Node* head);
+
+void enterMatchScores(struct LinkedList *list);
+
+void addMatchResult(struct LinkedList *list, const struct footballGame *result);
+
+void calculateTotalPoints(const struct LinkedList *list);
+
+void printResults(const struct LinkedList *list);
+
+int checkWinningScore(const struct LinkedList *list, int team);
+
+void calculateMatchNumbers(const struct LinkedList *list);
+
+void displayMatchesPlayedOnADate(const struct LinkedList *list);
+
+void displayTeamStatistics(const struct LinkedList *list);
+
+void freeList(struct Node *head);
 
 
 int main() {
-    struct LinkedList gameResults;
-    initializeList(&gameResults);
+    LinkedList *gameResults;
+    gameResults = initializeList();
 
     int choice;
     int enteredResults = 0;
@@ -120,7 +140,7 @@ int main() {
     }
 }
 
-const char* teamNames[NumTeams] = {
+const char *teamNames[NumTeams] = {
         "Bayern Munich",
         "Bayer Leverkusen",
         "FC Koeln",
@@ -129,23 +149,27 @@ const char* teamNames[NumTeams] = {
         "BvB Dortmund"
 };
 
-void initializeList(struct LinkedList* list) {
+LinkedList *initializeList() {
+    LinkedList *list = (*LinkedList)
+    malloc(sizeof(LinkedList));
     list->head = NULL;
+    return list;
 }
 
 //Function to enter match details to the list
-struct footballGame enterMatch (int matchNumber) {
+struct footballGame enterMatch(int matchNumber) {
     struct footballGame result;
-        printf("Match number %d: \n", matchNumber);
-        printf("Enter the date of a football match (DD.MM.YYYY): \n");
+    printf("Match number %d: \n", matchNumber);
+    printf("Enter the date of a football match (DD.MM.YYYY): \n");
 
-        while (1) {
-            if (scanf("%d.%d.%d", &result.date, &result.month, &result.year) != 3 || !isValidDate(result.date, result.month, result.year)) {
-                printf("Invalid date. Please enter a valid date (DD.MM.YYYY): ");
-            } else {
-                break;
-            }
+    while (1) {
+        if (scanf("%d.%d.%d", &result.date, &result.month, &result.year) != 3 ||
+            !isValidDate(result.date, result.month, result.year)) {
+            printf("Invalid date. Please enter a valid date (DD.MM.YYYY): ");
+        } else {
+            break;
         }
+    }
     printf("Enter the number of the football team 1: \n");
     printf("0: %s \n", teamNames[BayernMunich]);
     printf("1: %s \n", teamNames[BayerLeverkusen]);
@@ -166,11 +190,11 @@ struct footballGame enterMatch (int matchNumber) {
     scanf(" %d", &result.goalsTeam2);
 
     // Determine the winner and assign points
-    if(result.goalsTeam1 == result.goalsTeam2) {
+    if (result.goalsTeam1 == result.goalsTeam2) {
         result.winner = 0; // Tie
         result.pointsTeam1 = 1;
         result.pointsTeam2 = 1;
-    } else if(result.goalsTeam1 > result.goalsTeam2) {
+    } else if (result.goalsTeam1 > result.goalsTeam2) {
         result.winner = 1; //Team1 wins
         result.pointsTeam1 = 3;
         result.pointsTeam2 = 0;
@@ -183,7 +207,7 @@ struct footballGame enterMatch (int matchNumber) {
 }
 
 //Function to enter match scores to the list based on user input
-void enterMatchScores(struct LinkedList* list) {
+void enterMatchScores(struct LinkedList *list) {
     int matchNumber = 0;
     int enteredResults = 0;
 
@@ -214,8 +238,8 @@ void enterMatchScores(struct LinkedList* list) {
 }
 
 // Function to add match result to the list
-void addMatchResult(struct LinkedList* list, const struct footballGame* result) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+void addMatchResult(struct LinkedList *list, const struct footballGame *result) {
+    struct Node *newNode = (struct Node *) malloc(sizeof(struct Node));
     if (newNode == NULL) {
         fprintf(stderr, "Memory allocation failure \n");
         exit(EXIT_FAILURE);
@@ -225,8 +249,8 @@ void addMatchResult(struct LinkedList* list, const struct footballGame* result) 
     list->head = newNode;
 }
 
-void calculateTotalPoints(const struct LinkedList* list) {
-    struct Node* current = list->head;
+void calculateTotalPoints(const struct LinkedList *list) {
+    struct Node *current = list->head;
     int totalPointsTeam1 = 0;
     int totalPointsTeam2 = 0;
     int totalMatchNumbers = 0;
@@ -246,7 +270,7 @@ void calculateTotalPoints(const struct LinkedList* list) {
     }
 }
 
-void printResults(const struct LinkedList* list) {
+void printResults(const struct LinkedList *list) {
     struct Node *current = list->head;
 
     printf("Match results: \n");
@@ -256,7 +280,8 @@ void printResults(const struct LinkedList* list) {
         printf("Date: %d.%d.%d \n", game->date, game->month, game->year);
         printf("Team 1: %s \n ", teamNames[game->team1]);
         printf("Team 2: %s \n ", teamNames[game->team2]);
-        printf("Goals: %s: %d --- %s: %d\n", teamNames[game->team1], game->goalsTeam1, teamNames[game->team2], game->goalsTeam2);
+        printf("Goals: %s: %d --- %s: %d\n", teamNames[game->team1], game->goalsTeam1, teamNames[game->team2],
+               game->goalsTeam2);
 
         printf("Winner: ");
         if (game->winner == 0) {
