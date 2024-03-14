@@ -75,70 +75,6 @@ typedef struct LinkedList {
 // Function prototypes
 LinkedList *initializeList();
 
-struct footballGame enterMatch(int matchNumber);
-
-void enterMatchScores(struct LinkedList *list);
-
-void addMatchResult(struct LinkedList *list, const struct footballGame *result);
-
-void calculateTotalPoints(const struct LinkedList *list);
-
-void printResults(const struct LinkedList *list);
-
-int checkWinningScore(const struct LinkedList *list, int team);
-
-void calculateMatchNumbers(const struct LinkedList *list);
-
-void displayMatchesPlayedOnADate(const struct LinkedList *list);
-
-void displayTeamStatistics(const struct LinkedList *list);
-
-void freeList(struct Node *head);
-
-
-int main() {
-    LinkedList *gameResults;
-    gameResults = initializeList();
-
-    int choice;
-    int enteredResults = 0;
-
-    while (1) {
-        printf("Choose one of the following options. \n");
-        printf("1 - Enter a new result of a football match \n");
-        printf("2 - Display all the matches played on a specific date \n");
-        printf("3 - Display team statistics: how many matches are played, how many matches are won and tie, total points of a team\n");
-        printf("4 - Exit the program\n");
-        printf("Your choice: \n");
-
-        scanf("%d", &choice);
-
-        switch (choice) {
-            case 1:
-                if (enteredResults >= 4) {
-                    printf("You have entered the maximum number of football game results. Moving on to the next option.\n");
-                    break;
-                }
-                enterMatchScores(&gameResults);
-                enteredResults++;
-                break;
-            case 2:
-                displayMatchesPlayedOnADate(&gameResults);
-                break;
-            case 3:
-                displayTeamStatistics(&gameResults);
-                calculateMatchNumbers(&gameResults);
-                calculateTotalPoints(&gameResults);
-                break;
-            case 4:
-                printf("Exiting the program. Bye!");
-                freeList(gameResults.head);
-                return 0;
-            default:
-                printf("Invalid input. Please choose a number between 1-4. \n");
-        }
-    }
-}
 
 const char *teamNames[NumTeams] = {
         "Bayern Munich",
@@ -150,16 +86,14 @@ const char *teamNames[NumTeams] = {
 };
 
 LinkedList *initializeList() {
-    LinkedList *list = (*LinkedList)
-    malloc(sizeof(LinkedList));
+    LinkedList *list = (LinkedList *) malloc(sizeof(LinkedList));
     list->head = NULL;
     return list;
 }
 
 //Function to enter match details to the list
-struct footballGame enterMatch(int matchNumber) {
+struct footballGame enterMatch() {
     struct footballGame result;
-    printf("Match number %d: \n", matchNumber);
     printf("Enter the date of a football match (DD.MM.YYYY): \n");
 
     while (1) {
@@ -207,35 +141,6 @@ struct footballGame enterMatch(int matchNumber) {
 }
 
 //Function to enter match scores to the list based on user input
-void enterMatchScores(struct LinkedList *list) {
-    int matchNumber = 0;
-    int enteredResults = 0;
-
-    while (enteredResults < 4) {
-        matchNumber++;
-        enteredResults++;
-        if (enteredResults > 4) {
-            printf("You have entered max. number of game results. Moving on to the next options.\n");
-            break;
-        }
-
-        //enter a match score
-        struct footballGame result = enterMatch(matchNumber);
-        addMatchResult(list, &result);
-    }
-
-    printf("Match Results: \n");
-    printResults(list);
-
-    calculateTotalPoints(list);
-
-    //check for game winner
-    if (checkWinningScore(list, 1)) {
-        printf("%s is the winner! \n", teamNames[1]);
-    } else if (checkWinningScore(list, 2)) {
-        printf("%s is the winner! \n", teamNames[2]);
-    }
-}
 
 // Function to add match result to the list
 void addMatchResult(struct LinkedList *list, const struct footballGame *result) {
@@ -449,5 +354,61 @@ void freeList(struct Node *head) {
         next = current->next;
         free(current);
         current = next;
+    }
+}
+
+void enterMatchScores(struct LinkedList *list) {
+    //enter a match score
+    struct footballGame result = enterMatch();
+    addMatchResult(list, &result);
+
+    // printf("Match Results: \n");
+    //  printResults(list);
+
+    //  calculateTotalPoints(list);
+
+    //check for game winner
+    //   if (checkWinningScore(list, 1)) {
+    //      printf("%s is the winner! \n", teamNames[1]);
+    //  } else if (checkWinningScore(list, 2)) {
+    //       printf("%s is the winner! \n", teamNames[2]);
+    //   }
+}
+
+
+int main() {
+    LinkedList *gameResults;
+    gameResults = initializeList();
+
+    int choice;
+    while (1) {
+        printf("Choose one of the following options. \n");
+        printf("1 - Enter a new result of a football match \n");
+        printf("2 - Display all the matches played on a specific date \n");
+        printf("3 - Display team statistics: how many matches are played, how many matches are won and tie, total points of a team\n");
+        printf("4 - Exit the program\n");
+        printf("Your choice: \n");
+
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                enterMatchScores(gameResults);
+                break;
+            case 2:
+                displayMatchesPlayedOnADate(gameResults);
+                break;
+            case 3:
+                displayTeamStatistics(gameResults);
+                calculateMatchNumbers(gameResults);
+                calculateTotalPoints(gameResults);
+                break;
+            case 4:
+                printf("Exiting the program. Bye!");
+                freeList(gameResults->head);
+                return 0;
+            default:
+                printf("Invalid input. Please choose a number between 1-4. \n");
+        }
     }
 }
